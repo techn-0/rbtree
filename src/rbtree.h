@@ -3,19 +3,25 @@
 
 #include <stddef.h>
 
-typedef enum { RBTREE_RED, RBTREE_BLACK } color_t;
+typedef enum
+{
+  RBTREE_RED,
+  RBTREE_BLACK
+} color_t;
 
 typedef int key_t;
 
-typedef struct node_t {
+typedef struct node_t
+{
   color_t color;
   key_t key;
   struct node_t *parent, *left, *right;
 } node_t;
 
-typedef struct {
+typedef struct
+{
   node_t *root;
-  node_t *nil;  // for sentinel
+  node_t *nil; // for sentinel
 } rbtree;
 
 rbtree *new_rbtree(void);
@@ -29,4 +35,14 @@ int rbtree_erase(rbtree *, node_t *);
 
 int rbtree_to_array(const rbtree *, key_t *, const size_t);
 
-#endif  // _RBTREE_H_
+// 추가
+void printTree(rbtree *, node_t *);
+
+void delete_node(rbtree *t, node_t *node);
+void RB_Delete_Fixup(rbtree *t, node_t *x);
+void RB_Transplant(rbtree *t, node_t *u, node_t *v);
+void Left_Rotate(rbtree *t, node_t *x);
+void Right_Rotate(rbtree *t, node_t *x);
+void RB_Insert_Fixup(rbtree *t, node_t *z);
+node_t *find_min(const rbtree *t, node_t *sub_root);
+#endif // _RBTREE_H_

@@ -1,5 +1,5 @@
 #include "rbtree.h"
-
+#include <stdio.h>
 #include <stdlib.h>
 
 rbtree *new_rbtree(void)
@@ -44,13 +44,13 @@ void delete_node(rbtree *t, node_t *node)
 
 node_t *rbtree_insert(rbtree *t, const key_t key)
 {
+  printf("============= inserting %d ===========\n", key);
+  printTree(t, t->root);
+
   // TODO: implement insert
   // 새로 넣을 노드 정의
   node_t *z;
-  z->color = RBTREE_RED; // 삽입 노드는 항상 red
   z->key = key;
-  z->left = t->nil;
-  z->right = t->nil;
 
   // 삽입 위치 찾가
   node_t *y = t->nil;
@@ -69,6 +69,9 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
     y->left = z;
   else
     y->right = z;
+  z->left = t->nil;
+  z->right = t->nil;
+  z->color = RBTREE_RED; // 삽입 노드는 항상 red
   RB_Insert_Fixup(t, z); // 규칙 위반 체크
   return t->root;
 }
@@ -82,7 +85,17 @@ node_t *rbtree_find(const rbtree *t, const key_t key)
 node_t *rbtree_min(const rbtree *t)
 {
   // TODO: implement find
-  return t->root;
+  return find_min(t, t->root);
+}
+
+node_t *find_min(const rbtree *t, node_t *sub_root)
+{
+  node_t *cur = sub_root;
+  while (cur->left != t->nil)
+  {
+    cur = cur->left;
+  }
+  return cur;
 }
 
 node_t *rbtree_max(const rbtree *t)
@@ -109,7 +122,7 @@ int rbtree_erase(rbtree *t, node_t *p)
   }
   else
   {
-    y = rbtree_min(p->right);
+    y = find_min(t, p->right);
     y_origin_color = y->color;
     x = y->right;
     if (y->parent == p)
@@ -129,6 +142,7 @@ int rbtree_erase(rbtree *t, node_t *p)
     RB_Delete_Fixup(t, x);
   return 0;
 }
+
 void RB_Delete_Fixup(rbtree *t, node_t *x)
 {
   node_t *w;
@@ -164,7 +178,32 @@ void RB_Delete_Fixup(rbtree *t, node_t *x)
     }
     else
     {
-      1;
+      // 반대
+      w = x->parent->left;
+      if (w->color == RBTREE_RED)
+      {
+        w->color = RBTREE_BLACK;
+        x->parent->color = RBTREE_RED;
+        Right_Rotate(t, x->parent);
+        w = x->parent->left;
+      }
+      if (w->right->color == RBTREE_BLACK && w->left->color == RBTREE_BLACK)
+      {
+        w->color = RBTREE_RED;
+        x = x->parent;
+      }
+      else if (w->left->color == RBTREE_BLACK)
+      {
+        w->right->color = RBTREE_BLACK;
+        w->color = RBTREE_RED;
+        Left_Rotate(t, w);
+        w = x->parent->left;
+      }
+      w->color = x->parent->color;
+      x->parent->color = RBTREE_BLACK;
+      w->left->color = RBTREE_BLACK;
+      Right_Rotate(t, x->parent);
+      x = t->root;
     }
   }
   x->color = RBTREE_BLACK;
@@ -266,4 +305,14 @@ void RB_Insert_Fixup(rbtree *t, node_t *z)
     }
   }
   t->root->color = RBTREE_BLACK; // 루트는 항상 BLACK
+}
+//----------------------------------------------------------------
+void printTree(rbtree *tree, node_t *parent)
+{
+  if (parent != tree->nil)
+  {
+    printf("color: %d, key: %d\n", parent->color, parent->key);
+    printTree(tree, parent->left);
+    printTree(tree, parent->right);
+  }
 }
