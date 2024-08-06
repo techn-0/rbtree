@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "rbtree.h": "c",
+        "stddef.h": "c"
+    }
+}

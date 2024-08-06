@@ -36,8 +36,6 @@ int rbtree_erase(rbtree *, node_t *);
 int rbtree_to_array(const rbtree *, key_t *, const size_t);
 
 // 추가
-void printTree(rbtree *, node_t *);
-
 void delete_node(rbtree *t, node_t *node);
 void RB_Delete_Fixup(rbtree *t, node_t *x);
 void RB_Transplant(rbtree *t, node_t *u, node_t *v);
@@ -45,4 +43,8 @@ void Left_Rotate(rbtree *t, node_t *x);
 void Right_Rotate(rbtree *t, node_t *x);
 void RB_Insert_Fixup(rbtree *t, node_t *z);
 node_t *find_min(const rbtree *t, node_t *sub_root);
+node_t *find_max(const rbtree *t, node_t *sub_root);
+int inorder(node_t *cur, key_t *arr, const rbtree *t, int i, size_t n);
+
+void printTree(rbtree *t, node_t *node);
 #endif // _RBTREE_H_
