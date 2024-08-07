@@ -41,15 +41,15 @@ void delete_rbtree(rbtree *t)
 // 트리 삭제 보조 함수
 void delete_node(rbtree *t, node_t *node)
 {
-  if (node->left != t->nil)
+  if (node->left != t->nil) // L자식이 있다면
   {
-    delete_node(t, node->left);
+    delete_node(t, node->left); // L자식을 인자로 재귀
   }
-  if (node->right != t->nil)
+  if (node->right != t->nil) // R자식이 있다면
   {
-    delete_node(t, node->right);
+    delete_node(t, node->right); // R자식을 인자로 재귀
   }
-  if (node != t->nil)
+  if (node != t->nil) // 노드가 비어있지 않다면
   {
     free(node);
   }
@@ -66,12 +66,10 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
   // 삽입 위치 찾가
   node_t *y = t->nil;
   node_t *x = t->root;
-
   // printf("insert start\n");
-
-  while (x != t->nil)
+  while (x != t->nil) // 단말노드까지 반복
   {
-    y = x;
+    y = x; // 변경되기전 x의 값(부모)를 저장
     if (z->key < x->key)
     {
       x = x->left;
@@ -82,7 +80,6 @@ node_t *rbtree_insert(rbtree *t, const key_t key)
     }
   }
   // printf("escape loop\n");
-
   z->parent = y;
   if (y == t->nil)
   {
